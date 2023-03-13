@@ -2,9 +2,11 @@ import React from 'react'
 
 const Header = () => {
   return (
-    <header className='grid'>
-      <h1 className="text-indigo-600 mt-5">Desde header</h1>
-    </header>
+     <h1 className="font-black text-5xl text-center mx-auto md:w-2/3">
+          Seguimiento Pacientes {''} 
+         <span className="text-indigo-600">Veterinaria</span>
+     </h1>
+    
   )
 }
 export default Header

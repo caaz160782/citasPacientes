@@ -1,17 +1,49 @@
 import {useState} from 'react';
+import Error from './Error';
 
-const Formulario = () => {
-  const [nombre,setNombre]=useState('');
-  const [propietario,setPropietario]=useState('');
-  const [email,setEmail]=useState('');
-  const [fecha,setFecha]=useState('');
-  const [sintomas,setSintomas]=useState('');
+const Formulario = ({pacientes,setPacientes}) => {
+  const [nombre,setNombre]            =useState('');
+  const [propietario,setPropietario]  =useState('');
+  const [email,setEmail]              =useState('');
+  const [fecha,setFecha]              =useState('');
+  const [sintomas,setSintomas]        =useState('');
+  const [error,setError]              =useState(false)
+ 
+
+  const generarId=()=>{
+    const random =Math.random().toString(36).substring(2);
+    const date   =Date.now().toString(36) 
+
+    return random+date;
+  }
+
 
   const handleSubmit=(e)=>{
       e.preventDefault();
-      console.log("enviado el form");
-  }
-  
+      // validacion del frm
+      if([nombre,propietario,email,fecha,sintomas].includes('')){
+           setError(true)
+           return;
+      }
+      setError(false);
+      const objPaciente=
+             { 
+              nombre,
+              propietario,
+              email,
+              fecha,
+              sintomas,
+              id:generarId()
+             };
+
+      setPacientes([...pacientes,objPaciente]);
+      setNombre('');
+      setPropietario('');
+      setEmail('');
+      setFecha('');
+      setSintomas('');   
+    
+  } 
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -27,6 +59,10 @@ const Formulario = () => {
           onSubmit={handleSubmit}
         
         >
+          {// error && ( <Error msgError="Hay mas de un campo vacio" />)
+           error && ( <Error>"Hay mas de un campo vacio" </Error> )
+          
+          }
           <div className="mb-5">
             <label htmlFor="mascota" className="block text-gray-700 uppercase font-bold">
               Nombre Mascota

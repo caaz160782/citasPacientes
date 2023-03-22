@@ -1,7 +1,7 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import Error from './Error';
 
-const Formulario = ({pacientes,setPacientes}) => {
+const Formulario = ({pacientes,setPacientes,paciente,setPaciente}) => {
   const [nombre,setNombre]            =useState('');
   const [propietario,setPropietario]  =useState('');
   const [email,setEmail]              =useState('');
@@ -13,7 +13,6 @@ const Formulario = ({pacientes,setPacientes}) => {
   const generarId=()=>{
     const random =Math.random().toString(36).substring(2);
     const date   =Date.now().toString(36) 
-
     return random+date;
   }
 
@@ -26,17 +25,29 @@ const Formulario = ({pacientes,setPacientes}) => {
            return;
       }
       setError(false);
+      
       const objPaciente=
              { 
               nombre,
               propietario,
               email,
               fecha,
-              sintomas,
-              id:generarId()
+              sintomas              
              };
+      if(paciente.id){
+        //editando el registro
+        objPaciente.id = paciente.id;
+        const pacientesActualizados =pacientes.map(pacienteState => pacienteState.id ===
+                paciente.id ? objPaciente : pacienteState );
 
-      setPacientes([...pacientes,objPaciente]);
+        setPacientes(pacientesActualizados);
+        setPaciente({});        
+
+      }else{
+        //nuevo registro
+        objPaciente.id = generarId();
+        setPacientes([...pacientes,objPaciente]);
+      }      
       setNombre('');
       setPropietario('');
       setEmail('');
@@ -44,6 +55,19 @@ const Formulario = ({pacientes,setPacientes}) => {
       setSintomas('');   
     
   } 
+
+  useEffect(()=>{
+    if(Object.keys(paciente).length >0){
+      const {nombre,propietario,email,fecha,sintomas}=paciente;
+      setNombre(nombre);
+      setPropietario(propietario);
+      setEmail(email);
+      setFecha(fecha);
+      setSintomas(sintomas);   
+    }
+  },[paciente])
+
+
 
   return (
     <div className="md:w-1/2 lg:w-2/5 mx-5">
@@ -135,7 +159,7 @@ const Formulario = ({pacientes,setPacientes}) => {
                         hover:bg-indigo-700 
                          cursor-pointer
                          transition-all"
-             value="Agregar Paciente"
+             value={ paciente.id ?" Editar Paciente" :  "Agregar Paciente"}
             />
           </div>
 

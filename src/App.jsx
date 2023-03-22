@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Header from "./components/Header";
 import Formulario from "./components/Formulario";
 import ListadoPacientes from "./components/ListadoPacientes";
@@ -12,6 +12,21 @@ function App() {
     const pacienteActualizados = pacientes.filter(paciente => paciente.id !== id)
     setPacientes(pacienteActualizados);
   }
+
+  useEffect(()=>{
+    const obtenerLS =()=>{
+      const pacientesLS =JSON.parse(localStorage.getItem('pacientes')) ?? [];
+      setPacientes(pacientesLS);
+    }
+    obtenerLS();
+  },[])
+
+
+  useEffect(()=>{
+    localStorage.setItem('pacientes',JSON.stringify(pacientes));
+  },[pacientes])
+
+
 
   return (
   <div className="container mx-auto mt-20">
